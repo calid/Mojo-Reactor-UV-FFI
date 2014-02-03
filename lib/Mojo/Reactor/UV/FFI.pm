@@ -94,8 +94,8 @@ sub _timer {
   my $cb = shift or die 'Need cb';
   my $sub = sub {
     my ($loop, $err) = @_;
-    $self->_sandbox("Timer $id", $cb); 
-    $self->remove($id) unless $recurring; 
+    $self->_sandbox("Timer $id", $cb);
+    $self->remove($id) unless $recurring;
     return;
   };
   my $ffi_cb = _ffi_callback $sub, qw/void ptr int/;

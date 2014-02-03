@@ -7,7 +7,7 @@ use Test::More;
 use Mojo::Reactor::UV::FFI;
 use Mojo::IOLoop;
 
-isa_ok( Mojo::IOLoop->singleton->reactor, 'Mojo::Reactor::UV::FFI', 'Detect Mojo::Reactor::UV::FFI'); 
+isa_ok( Mojo::IOLoop->singleton->reactor, 'Mojo::Reactor::UV::FFI', 'Detect Mojo::Reactor::UV::FFI');
 
 subtest 'Timer' => sub {
   my $fired = 0;
