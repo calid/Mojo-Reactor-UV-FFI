@@ -48,6 +48,8 @@ _ffi_method uv_strerror => qw/str int/;
 
 _ffi_method uv_loop_new => qw/ptr/;
 
+_ffi_method uv_loop_delete => qw/void ptr/;
+
 _ffi_method uv_close => qw/void ptr ptr/;
 
 _ffi_method uv_run => qw/int ptr int/;
@@ -158,6 +160,11 @@ sub _handle_size {
 sub _sandbox {
   my ($self, $event, $cb) = (shift, shift, shift);
   eval { $self->$cb(@_); 1 } or $self->emit(error => "$event failed: $@");
+}
+
+sub DESTROY {
+  my $self = shift;
+  $self->uv_loop_delete($self->loop);
 }
 
 1;
