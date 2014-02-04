@@ -1,0 +1,12 @@
+{
+   perl_supp1
+   Memcheck:Leak
+   fun:*alloc
+   fun:Perl_*
+}
+{
+   perl_supp2
+   Memcheck:Leak
+   fun:*alloc
+   fun:S_*
+}

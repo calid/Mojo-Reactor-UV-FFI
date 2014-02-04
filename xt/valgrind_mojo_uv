@@ -1,0 +1,10 @@
+#!/bin/bash
+
+valgrind \
+    --leak-check=full \
+    --track-origins=yes \
+    --gen-suppressions=all \
+    --suppressions=xt/perl.supp \
+    --xml=yes \
+    --xml-file=valgrind_mojo_uv.xml \
+    perl t/timers.t
