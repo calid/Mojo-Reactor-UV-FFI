@@ -143,3 +143,4 @@ sub _sandbox {
 
 1;
 
+# vim:set sw=2:
