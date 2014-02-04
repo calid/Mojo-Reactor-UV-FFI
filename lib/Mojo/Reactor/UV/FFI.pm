@@ -52,6 +52,12 @@ _ffi_method uv_run => qw/int ptr int/;
 
 _ffi_method uv_stop => qw/void ptr/;
 
+my $malloc = FFI::Raw->new(
+  'libc.so.6' => 'malloc',
+  FFI::Raw::ptr,
+  FFI::Raw::ulong
+);
+
 sub start    { shift->_start(0) }
 sub one_tick { shift->_start(1) }
 
@@ -86,9 +92,12 @@ sub _timer {
   my $self  = shift;
   my $recurring = shift;
 
-  my $timer = $self->_malloc_handle('timer');
+  my $timer = $malloc->(
+    $self->_handle_size('timer')
+  );
+
   $self->uv_timer_init($self->loop, $timer);
-  my $id = $timer->tostr;
+  my $id = scalar $timer;
 
   my $timeout = 1000 * shift;
   my $cb = shift or die 'Need cb';
@@ -123,12 +132,6 @@ sub remove {
 }
 
 _ffi_method uv_handle_size => qw/uint uint/;
-
-sub _malloc_handle {
-  my ($self, $type) = @_;
-  my $size  = $self->_handle_size($type);
-  return FFI::Raw::memptr($size);
-}
 
 sub _handle_size {
   my $self = shift;
