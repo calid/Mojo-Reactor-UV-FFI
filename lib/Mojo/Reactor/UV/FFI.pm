@@ -131,7 +131,8 @@ sub _timer {
     timer => $timer,
     cb    => $ffi_cb,
   };
-  return $id
+
+  return $ffi_cb, $id;
 }
 
 _ffi_method uv_timer_again => qw/int ptr/;
