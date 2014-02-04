@@ -48,9 +48,17 @@ _ffi_method uv_strerror => qw/str int/;
 
 _ffi_method uv_loop_new => qw/ptr/;
 
+_ffi_method uv_close => qw/void ptr ptr/;
+
 _ffi_method uv_run => qw/int ptr int/;
 
 _ffi_method uv_stop => qw/void ptr/;
+
+my $cfree = FFI::Raw->new(
+    'libc.so.6' => 'free',
+    FFI::Raw::void,
+    FFI::Raw::ptr
+);
 
 my $malloc = FFI::Raw->new(
   'libc.so.6' => 'malloc',
@@ -84,6 +92,13 @@ _ffi_method uv_timer_init => qw/int ptr ptr/;
 _ffi_method uv_timer_start => qw/int ptr ptr uint64 uint64/;
 
 _ffi_method uv_timer_stop => qw/int ptr/;
+
+my $close_sub = sub {
+    my ($handle) = @_;
+    $cfree->($handle);
+};
+
+my $close_cb = _ffi_callback $close_sub, qw/void ptr/;
 
 sub timer     { shift->_timer(0, @_) }
 sub recurring { shift->_timer(1, @_) }
@@ -129,6 +144,7 @@ sub remove {
   my ($self, $id) = @_;
   my $timer = delete $self->timers->{$id} or return;
   $self->uv_timer_stop($timer->{timer});
+  $self->uv_close($timer->{timer}, $close_cb);
 }
 
 _ffi_method uv_handle_size => qw/uint uint/;
